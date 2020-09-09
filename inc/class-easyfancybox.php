@@ -100,7 +100,7 @@ jQuery(\'.nofancybox,a.wp-block-file__button,a.pin-it-button,a[href*="pinterest.
 			if ( !empty($autoAttribute) ) {
 				if ( is_numeric($autoAttribute) ) {
 					$script .= '
-jQuery('.$value['options']['autoAttribute']['selector'].').not(\'.nolightbox,li.nolightbox>a\').addClass(\''.$value['options']['class']['default'].'\');';
+jQuery('.$value['options']['autoAttribute']['selector'].').not(\'.nolightbox,.nolightbox a\').addClass(\''.$value['options']['class']['default'].'\');';
 				} else {
 					// set selectors
 					$file_types = array_filter( explode( ' ', str_replace( ',', ' ', $autoAttribute ) ) );
@@ -112,7 +112,7 @@ var fb_'.$key.'_select=\'';
 							$type = '.'.$type;
 						if ($more>0)
 							$script .= ',';
-						$script .= 'a['.$value['options']['autoAttribute']['selector'].'"'.$type.'"]:not(.nolightbox,li.nolightbox>a,a[href*="?s="]),area['.$value['options']['autoAttribute']['selector'].'"'.$type.'"]:not(.nolightbox)';
+						$script .= 'a['.$value['options']['autoAttribute']['selector'].'"'.$type.'"]:not(.nolightbox,.nolightbox a,a[href*="?s="]),area['.$value['options']['autoAttribute']['selector'].'"'.$type.'"]:not(.nolightbox)';
 						$more++;
 					}
 					$script .= '\';';
