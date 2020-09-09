@@ -209,7 +209,9 @@ jQuery(\'' . $value['options']['tag']['default'] . '\')';
 
 		$script .= '};
 jQuery(\'a.fancybox-close\').on(\'click\',function(e){e.preventDefault();jQuery.fancybox.close()});
+jQuery(document).trigger(\'fancybox-ready\');
 };';
+		// end easy_fancybox_handler()
 
 		if ( empty($delayClick) ) $delayClick = '0';
 
@@ -407,6 +409,7 @@ var easy_fancybox_auto=function(){setTimeout(function(){jQuery(\'a[class*="'.$tr
 			delete_option( 'fancybox_compatIE8' );
 			delete_option( 'fancybox_centerOnScroll' );
 			delete_option( 'fancybox_opacity' );
+			delete_option( 'fancybox_opacityInline' );
 		}
 		// mark upgrade done
 		update_option('easy_fancybox_version', EASY_FANCYBOX_VERSION);
