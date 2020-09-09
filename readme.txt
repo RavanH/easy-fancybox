@@ -503,6 +503,7 @@ Swipe support, new options, no background scrolling
 * NEW: no background scrolling
 * NEW: Swipe support
 * NEW: Option to work with deferred jQuery
+* New: Event "fancybox-ready" (triggered on document) when FancyBox is ready for interaction
 * Gallery arrows on edge
 * Smaller script and stylesheet sizes
 * Remove redundant CSS
