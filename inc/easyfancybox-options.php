@@ -816,13 +816,6 @@ $efb_options = array(
 				'default' => 'easeInBack',
 				'description' => ' <em><a href="'.$efb_url.'">' . __('More options &raquo;','easy-fancybox') . '</a></em><br />' . __('Note:','easy-fancybox') . ' ' . __('Easing effects only apply when Transition is set to Elastic. ','easy-fancybox')  . '<br /><br />'
 			),
-			'opacity' => array(
-				'id' => 'fancybox_opacityInline',
-				'input' => 'checkbox',
-				'noquotes' => true,
-				'default' => '',
-				'description' => __('Transparency fade during elastic transition. CAUTION: Use only when at least Transition In is set to Elastic!','easy-fancybox')
-			),
 			'hideOnContentClick' => array(
 				'id' => 'fancybox_hideOnContentClickInline',
 				'input' => 'checkbox',
