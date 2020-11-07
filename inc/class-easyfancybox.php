@@ -251,30 +251,39 @@ var easy_fancybox_auto=function(){setTimeout(function(){jQuery(\'a[class*="'.$tr
 
 		// HEADER STYLES //
 
-		// customized styles
 		$styles = '.fancybox-hidden{display:none}';
+
+		/* spotlight */
 		if ( isset($overlaySpotlight) && 'true' == $overlaySpotlight )
 			$styles .= '#fancybox-overlay{background-attachment:fixed;background-image:url("' . self::$plugin_url . 'images/light-mask.png");background-position:center;background-repeat:no-repeat;background-size:100% 100%}';
 
+		/* window styles */
 		if ( !empty($borderRadius) )
 			$styles .= '#fancybox-outer,#fancybox-content{border-radius:'.$borderRadius.'px}.fancybox-title-inside{padding-top:'.$borderRadius.'px;margin-top:-'.$borderRadius.'px !important;border-radius: 0 0 '.$borderRadius.'px '.$borderRadius.'px}';
 
+		//if ( !empty($backgroundColor) )
+		//	$styles .= '#fancybox-outer{background:'.$backgroundColor.'}';
+
+		/* content styles */
 		$content_style = '';
-		if ( !empty($backgroundColor) )
-			$content_style .= 'background:'.$backgroundColor.';';
-
-		if ( !empty($paddingColor) )
+		if ( !empty($backgroundColor) ) {
+			$content_style .= 'background-color:'.$backgroundColor.';';
+		}
+		if ( !empty($paddingColor) ) {
 			$content_style .= 'border-color:'.$paddingColor.';';
-
+			$styles .= '.fancybox-title-inside{background-color:'.$paddingColor.'}';
+		}
 		if ( !empty($textColor) ) {
 			$content_style .= 'color:'.$textColor.';';
-			$styles .= '#fancybox-outer{background:'.$paddingColor.'}'; //.fancybox-title-inside{background-color:'.$paddingColor.';margin-left:0 !important;margin-right:0 !important;width:100% !important;}
 		}
 		if ( !empty($content_style) )
 			$styles .= '#fancybox-content{'.$content_style.'}';
 
+		/* title */
 		if ( !empty($titleColor) )
 			$styles .= '#fancybox-title,#fancybox-title-float-main{color:'.$titleColor.'}';
+
+		/* other */
 
 		if ( 'false' !== $autoScale )
 			$styles .= 'html.fancybox-active,html.fancybox-active body{touch-action:none;overscroll-behavior:none;-webkit-overflow-scrolling:auto;overflow:hidden;}';
