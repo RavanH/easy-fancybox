@@ -8,7 +8,7 @@
 * That said, it is hardly a one-person project. Many people have submitted bugs, code, and offered their advice freely. Their support is greatly appreciated.
 *
 * Copyright (c) 2020 - RavanH
-* Version: 1.4 (2020/06/15)
+* Version: 1.5 (2020/11/09)
 * Requires: jQuery v1.7+
 *
 * Licensed GPLv3
@@ -75,6 +75,8 @@
 		if ('object' === typeof arguments[0] && 'click' === arguments[0].type) {
 			arguments[0].preventDefault();
 		}
+
+		$(document).trigger('fancybox-start', selectedArray, selectedIndex, selectedOpts);
 
 		ret = selectedOpts.onStart(selectedArray, selectedIndex, selectedOpts);
 
@@ -181,11 +183,11 @@
 
 		switch (type) {
 			case 'html' :
-			tmp.html( selectedOpts.content );
-			selectedOpts.enableKeyboardNav = false;
-			selectedOpts.enableSwipeNav = false;
-			selectedOpts.showNavArrows = false;
-			_process_inline();
+				tmp.html( selectedOpts.content );
+				selectedOpts.enableKeyboardNav = false;
+				selectedOpts.enableSwipeNav = false;
+				selectedOpts.showNavArrows = false;
+				_process_inline();
 			break;
 
 			case 'inline' :
@@ -210,7 +212,7 @@
 				$(obj).appendTo(tmp);
 
 				_process_inline();
-				break;
+			break;
 
 			case 'image':
 				selectedOpts.keepRatio = true;
@@ -234,7 +236,7 @@
 				};
 
 				imgPreloader.src = href;
-				break;
+			break;
 
 			case 'swf':
 				selectedOpts.scrolling = 'no';
@@ -252,7 +254,7 @@
 				tmp.html(str);
 
 				_process_inline();
-				break;
+			break;
 
 			case 'svg':
 				selectedOpts.scrolling = 'no';
@@ -263,7 +265,7 @@
 				tmp.html(str);
 
 				_process_inline();
-				break;
+			break;
 
 			case 'pdf':
 				selectedOpts.scrolling = 'no';
@@ -276,7 +278,7 @@
 				tmp.html(str);
 
 				_process_inline();
-				break;
+			break;
 
 			case 'ajax':
 				busy = false;
@@ -316,7 +318,7 @@
 						}
 					}
 				}));
-				break;
+			break;
 
 			case 'iframe':
 				selectedOpts.enableKeyboardNav = false;
@@ -326,26 +328,22 @@
 				$.fancybox.showActivity();
 
 				_show();
-				break;
+			break;
 		}
 	},
 
 	_process_inline = function() {
 		var w = selectedOpts.width,
-		h = selectedOpts.height,
-		ww = $(window).width() == 0 ? window.innerWidth : $(window).width(),
-		wh = $(window).height() == 0 ? window.innerHeight : $(window).height();
+			h = selectedOpts.height;
 
 		if (w.toString().indexOf('%') > -1) {
-			w = parseInt( (ww - (selectedOpts.margin * 2)) * parseFloat(w) / 100, 10) + 'px';
-
+			w = parseInt((window.innerWidth - (selectedOpts.margin * 2)) * parseFloat(w) / 100, 10) + 'px';
 		} else {
 			w = w == 'auto' ? 'auto' : w + 'px';
 		}
 
 		if (h.toString().indexOf('%') > -1) {
-			h = parseInt( (wh - (selectedOpts.margin * 2)) * parseFloat(h) / 100, 10) + 'px';
-
+			h = parseInt((window.innerHeight - (selectedOpts.margin * 2)) * parseFloat(h) / 100, 10) + 'px';
 		} else {
 			h = h == 'auto' ? 'auto' : h + 'px';
 		}
@@ -378,7 +376,7 @@
 		}
 
 		if (wrap.is(":visible") && false === currentOpts.onCleanup(currentArray, currentIndex, currentOpts)) {
-			$('.fancybox-inline-tmp').trigger('fancybox-cancel');
+			$.event.trigger('fancybox-cancel');
 
 			busy = false;
 			return;
@@ -393,9 +391,7 @@
 		$(window).off("orientationchange.fb resize.fb scroll.fb");
 		$(document).off('keydown.fb');
 
-		if (wrap.is(":visible") && currentOpts.titlePosition !== 'outside') {
-			wrap.css('height', wrap.height());
-		}
+		var oldType = currentOpts.type;
 
 		currentArray = selectedArray;
 		currentIndex = selectedIndex;
@@ -415,30 +411,46 @@
 			overlay.hide();
 		}
 
-		final_pos = _get_zoom_to();
-
 		_process_title();
+
+		final_pos = _get_zoom_to();
 
 		if (wrap.is(":visible")) {
 			$( close.add( nav_prev ).add( nav_next ) ).hide();
 
-			content.fadeTo(currentOpts.changeFade, 0.3, function() {
-				$('.fancybox-inline-tmp').trigger('fancybox-change');
+			$.event.trigger('fancybox-change');
 
+			// if both images
+			if (oldType === 'image' && currentOpts.type === 'image') {
+				// crossfade
+				content.prepend( tmp.contents() );
 				content
-				.empty()
-				.css({
-					'border-width' : currentOpts.padding
-				});
+					.children()
+					.first()
+					.next()
+					.fadeOut(currentOpts.changeFade, function(){ $( this ).remove(); } );
 
-				wrap.animate(final_pos, {
-					duration : currentOpts.changeSpeed,
-					easing : currentOpts.easingChange,
-					complete : function() {
-						content.html( tmp.contents() ).fadeTo(currentOpts.changeFade, 1, _finish);
-					}
+					content.css('border-width', currentOpts.padding);
+
+					wrap.animate(final_pos, {
+						duration : currentOpts.changeSpeed,
+						easing : currentOpts.easingChange,
+						complete : _finish
+					});
+			} else {
+				content.fadeTo(currentOpts.changeFade, 0.3, function() {
+
+					content.css('border-width', currentOpts.padding);
+
+					wrap.animate(final_pos, {
+						duration : currentOpts.changeSpeed,
+						easing : currentOpts.easingChange,
+						complete : function() {
+							content.html( tmp.contents() ).fadeTo(currentOpts.changeFade, 1, _finish);
+						}
+					});
 				});
-			});
+			}
 
 			return;
 		}
@@ -454,25 +466,24 @@
 
 			final_pos.opacity = 1;
 
-			wrap.animate(final_pos, {
-				duration : currentOpts.speedIn,
-				easing : currentOpts.easingIn,
-				complete : _finish
-			});
-		} else {
-			if (currentOpts.titlePosition == 'inside' && titleHeight > 0) {
-				title.show();
-			}
-
 			wrap
-			.css(final_pos)
-			.fadeIn( currentOpts.transitionIn == 'none' ? 0 : currentOpts.speedIn, _finish );
+				.attr('aria-hidden','false')
+				.animate(final_pos, {
+					duration : currentOpts.speedIn,
+					easing : currentOpts.easingIn,
+					complete : _finish
+				});
+		} else {
+			wrap
+				.css(final_pos)
+				.attr('aria-hidden','false')
+				.fadeIn( currentOpts.transitionIn == 'none' ? 0 : currentOpts.speedIn, _finish );
 		}
 	},
 
 	_format_title = function(title) {
 		if (title && title.length) {
-			return '<div id="fancybox-title-' + currentOpts.titlePosition + '">' + title + '</div>';
+			return '<div id="fancybox-title">' + title + '</div>';
 		}
 
 		return false;
@@ -480,12 +491,11 @@
 
 	_process_title = function() {
 		titleStr = currentOpts.title || '';
-		titleHeight = 0;
 
 		title
-		.empty()
-		.removeAttr('style')
-		.removeClass();
+			.empty()
+			.removeAttr('style')
+			.removeClass();
 
 		if (currentOpts.titleShow === false) {
 			title.hide();
@@ -500,44 +510,33 @@
 		}
 
 		title
-		.addClass('fancybox-title-' + currentOpts.titlePosition)
-		.html( titleStr )
-		.appendTo( 'body' )
-		.show();
+			.addClass('fancybox-title-' + currentOpts.titlePosition)
+			.html( titleStr )
+			.appendTo( 'body' )
+			.show();
 
 		switch (currentOpts.titlePosition) {
+			case 'outside':
 			case 'inside':
-			title
-			.css({
-				'width' : final_pos.width - (currentOpts.padding * 2),
-				'marginLeft' : currentOpts.padding,
-				'marginRight' : currentOpts.padding
-			}).appendTo( outer );
+				titleHeight = title.outerHeight(true);
+				// don't break here
 
-			titleHeight = title.outerHeight(true);
-
-			final_pos.height += titleHeight;
-			break;
-
+			case 'inside':
 			case 'over':
-			title
-			.css({
-				'marginLeft' : currentOpts.padding,
-				'width'	: final_pos.width - (currentOpts.padding * 2),
-				'bottom' : currentOpts.padding
-			})
-			.appendTo( outer );
+				if (content.is(":visible")) {
+					title.appendTo( content );
+				} else {
+					title.appendTo( tmp );
+				}
 			break;
 
 			default:
-			title
-			.css({
-				'width' : final_pos.width - (currentOpts.padding * 2),
-				'paddingLeft' : currentOpts.padding,
-				'paddingRight' : currentOpts.padding
-			})
-			.appendTo( wrap );
-			break;
+				title
+					.css({
+						'paddingLeft' : currentOpts.padding,
+						'paddingRight' : currentOpts.padding
+					})
+					.appendTo( wrap );
 		}
 
 		title.hide();
@@ -599,10 +598,6 @@
 	},
 
 	_finish = function () {
-		/*if (currentOpts.autoDimensions) {
-			content.css('height','auto');
-		}*/
-
 		if (titleStr && titleStr.length) {
 			title.show();
 		}
@@ -634,11 +629,11 @@
 			});
 		}
 
-		wrap.show();
-
-		content.first().focus();
+		wrap.show().focus();
 
 		busy = false;
+
+		$(document).trigger('fancybox-complete', currentArray, currentIndex, currentOpts);
 
 		currentOpts.onComplete(currentArray, currentIndex, currentOpts);
 
@@ -712,23 +707,6 @@
 		}
 	},
 
-/*	_get_viewport = function() {
-		var w = !isTouch && window.innerWidth && document.documentElement.clientWidth ?
-				Math.min(window.innerWidth, document.documentElement.clientWidth) :
-				window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth,
-			h = !isTouch && window.innerHeight && document.documentElement.clientHeight ?
-				Math.min(window.innerHeight, document.documentElement.clientHeight) :
-				window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight,
-			margin = arguments[0] === true ? 0 : currentOpts.margin;
-
-		return [
-			w - (margin * 2),
-			h - (margin * 2),
-			$(document).scrollLeft() + margin,
-			$(document).scrollTop() + margin
-		];
-	},*/
-
 	_get_zoom_to = function () {
 		var view = [
 				window.innerWidth - (currentOpts.margin * 2),
@@ -737,42 +715,38 @@
 				$(document).scrollTop() + currentOpts.margin
 			],
 			to = {},
-			double_padding = currentOpts.padding * 2,
-			ratio;
+			border = currentOpts.padding * 2,
+			ratio = currentOpts.keepRatio ? currentOpts.width / currentOpts.height : 1;
 
 		if (currentOpts.width.toString().indexOf('%') > -1) {
 			to.width = parseInt((view[0] * parseFloat(currentOpts.width)) / 100, 10);
 		} else {
-			to.width = currentOpts.width + double_padding;
+			to.width = currentOpts.width;
 		}
 
 		if (currentOpts.height.toString().indexOf('%') > -1) {
-			to.height = parseInt((view[1] * parseFloat(currentOpts.height)) / 100, 10);
+			to.height = parseInt((view[1] * parseFloat(currentOpts.height)) / 100 + titleHeight, 10);
 		} else {
-			to.height = currentOpts.height + double_padding;
+			to.height = currentOpts.height;
 		}
 
-		if (currentOpts.autoScale && (to.width > view[0] || to.height > view[1])) {
-			if (currentOpts.keepRatio) {
-				ratio = currentOpts.width / currentOpts.height;
-
-				if ((to.width ) > view[0]) {
-					to.width = view[0];
-					to.height = parseInt(((to.width - double_padding) / ratio) + double_padding, 10);
-				}
-
-				if ((to.height) > view[1]) {
-					to.height = view[1];
-					to.width = parseInt(((to.height - double_padding) * ratio) + double_padding, 10);
-				}
-			} else {
-				to.width = Math.min(to.width, view[0]);
-				to.height = Math.min(to.height, view[1]);
-			}
+		// scale down to fit viewport, recalculate by ratio based on width and height without border and title
+		if (currentOpts.autoScale && to.width > view[0] - border) {
+			to.width = view[0] - border;
+			to.height = parseInt(to.width / ratio, 10);
+		}
+		if (currentOpts.autoScale && to.height > view[1] - border - titleHeight) {
+			to.height = view[1] - border - titleHeight;
+			to.width = parseInt(to.height * ratio, 10);
 		}
 
-		to.top = parseInt(Math.max(view[3] - 20, view[3] + ((view[1] - to.height - 40) * 0.5)), 10);
-		to.left = parseInt(Math.max(view[2] - 20, view[2] + ((view[0] - to.width - 40) * 0.5)), 10);
+		// adjust final height and width for padding and title
+		to.width += border;
+		to.height += border + titleHeight;
+
+		// calculate position
+		to.left = parseInt(Math.max(view[2], view[2] + ((view[0] - to.width) / 2)), 10);
+		to.top = parseInt(Math.max(view[3], view[3] + ((view[1] - to.height) / 2)), 10);
 
 		return to;
 	},
@@ -792,8 +766,8 @@
 		return {
 			width : orig.width() + (currentOpts.padding * 2),
 			height : orig.height() + (currentOpts.padding * 2),
-			top : pos.top - currentOpts.padding - currentOpts.margin,
-			left : pos.left - currentOpts.padding - currentOpts.margin,
+			top : pos.top - currentOpts.padding,
+			left : pos.left - currentOpts.padding,
 			opacity : 0
 		};
 	},
@@ -816,9 +790,11 @@
 		title.empty().hide();
 		wrap.hide();
 
-		$('.fancybox-inline-tmp').trigger('fancybox-cleanup');
+		$.event.trigger('fancybox-cleanup');
 
 		content.empty();
+
+		$(document).trigger('fancybox-closed', currentArray, currentIndex, currentOpts );
 
 		currentOpts.onClosed(currentArray, currentIndex, currentOpts);
 
@@ -842,6 +818,7 @@
 
 		$(this)
 		.data('fancybox', $.extend({}, options, ($.metadata ? $(this).metadata() : {})))
+		.attr({'aria-controls':'fancybox','aria-haspopup':'dialog'})
 		.off('click.fb')
 		.on('click.fb', function(e) {
 			if (busy) {
@@ -988,9 +965,9 @@
 
 		busy = true;
 
-		$('.fancybox-inline-tmp').trigger('fancybox-cancel');
-
 		_abort();
+
+		$(document).trigger('fancybox-cancel', selectedArray, selectedIndex, selectedOpts);
 
 		selectedOpts.onCancel(selectedArray, selectedIndex, selectedOpts);
 
@@ -1004,6 +981,8 @@
 		}
 
 		busy = true;
+
+		$(document).trigger('fancybox-cleanup', currentArray, currentIndex, currentOpts);
 
 		if (currentOpts && false === currentOpts.onCleanup(currentArray, currentIndex, currentOpts)) {
 			busy = false;
@@ -1029,14 +1008,18 @@
 		if (currentOpts.transitionOut == 'elastic') {
 			title.empty().hide();
 
-			wrap.animate(_get_orig_pos(), {
+			wrap
+			.animate(_get_orig_pos(), {
 				duration : currentOpts.speedOut,
 				easing : currentOpts.easingOut,
 				complete : _cleanup
-			});
+			})
+			.attr('aria-hidden','true');
 
 		} else {
-			wrap.fadeOut( currentOpts.transitionOut == 'none' ? 0 : currentOpts.speedOut, _cleanup);
+			wrap
+			.fadeOut( currentOpts.transitionOut == 'none' ? 0 : currentOpts.speedOut, _cleanup)
+			.attr('aria-hidden','true');
 		}
 	};
 
@@ -1046,11 +1029,11 @@
 		resize_timeout = setTimeout( function() {
 			var restore = [];
 
-			final_pos = _get_zoom_to();
-
 			busy = true;
 
 			_process_title();
+
+			final_pos = _get_zoom_to();
 
 			close.is(":visible") && restore.push(close) && close.hide();
 			nav_prev.is(":visible") && restore.push(nav_prev) && nav_prev.hide();
@@ -1060,13 +1043,10 @@
 				duration : currentOpts.changeSpeed,
 				easing : currentOpts.easingChange,
 				complete : function() {
-					/*if (selectedOpts.autoDimensions) {
-						content.css('height','auto');
-					}*/
 					if (titleStr && titleStr.length) {
 						title.show();
 					}
-
+					restore.forEach( el => el.show() );
 					busy = false;
 				}
 			});
@@ -1074,7 +1054,7 @@
 	};
 
 	$.fancybox.init = function() {
-		if ($("#fancybox-wrap").length) {
+		if ($("#fancybox").length) {
 			return;
 		}
 
@@ -1082,18 +1062,17 @@
 			tmp = $('<div id="fancybox-tmp"></div>'),
 			loading = $('<div id="fancybox-loading"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>'),
 			overlay = $('<div id="fancybox-overlay"></div>'),
-			wrap = $('<div id="fancybox-wrap"></div>')
+			wrap = $('<div id="fancybox" role="dialog" aria-hidden="true" aria-labelledby="fancybox-title" tabindex="-1"></div>')
 		);
 
 		outer = $('<div id="fancybox-outer"></div>').appendTo( wrap );
 
 		outer.append(
 			content = $('<div id="fancybox-content"></div>'),
-			close = $('<a id="fancybox-close" class="fancy-ico"></a>'),
-			title = $('<div id="fancybox-title"></div>'),
-
-			nav_prev = $('<a id="fancybox-prev" class="fancy-ico"></a>'),
-			nav_next = $('<a id="fancybox-next" class="fancy-ico"></a>')
+			close = $('<a id="fancybox-close" class="fancy-ico" tabindex="1"><span></span></a>'),
+			title = $('<div id="fancybox-title-wrap"></div>'),
+			nav_next = $('<a id="fancybox-next" class="fancy-ico" tabindex="2"><span></span></a>'),
+			nav_prev = $('<a id="fancybox-prev" class="fancy-ico" tabindex="3"><span></span></a>')
 		);
 
 		close.click($.fancybox.close);
@@ -1112,7 +1091,7 @@
 
 	$.fn.fancybox.defaults = {
 		padding : 10,
-		margin : 20,
+		margin : 40,
 		modal : false,
 		cyclic : false,
 		allowfullscreen : false,

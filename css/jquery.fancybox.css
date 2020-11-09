@@ -11,21 +11,21 @@
  * Version: 1.4 (2020/06/15)
  *
  * Dual licensed under the MIT and GPL licenses:
- *   http://www.opensource.org/licenses/mit-license.php
- *   http://www.gnu.org/licenses/gpl.html
+ *	 http://www.opensource.org/licenses/mit-license.php
+ *	 http://www.gnu.org/licenses/gpl.html
  */
 
 #fancybox-loading, #fancybox-loading div,
 #fancybox-overlay,
-#fancybox-wrap,
+#fancybox,
 #fancybox-outer,
 #fancybox-frame,
 #fancybox-close,
 #fancybox-title, #fancybox-title div,
 #fancybox-prev, #fancybox-next, .fancy-ico {
-	-webkit-box-sizing: content-box;
-	-moz-box-sizing: content-box;
-	box-sizing: content-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 /* light box framework */
@@ -48,13 +48,13 @@
 	display: none;
 }
 
-#fancybox-wrap {
+#fancybox {
 	position: absolute;
 	top: 0;
 	left: 0;
-	padding: 20px;
 	z-index: 111101;
 	display: none;
+	outline: none !important;
 }
 
 #fancybox-outer {
@@ -69,7 +69,6 @@
 
 #fancybox-content {
 	position: relative;
-	box-sizing: border-box;
 	width: 100%;
 	height: 100%;
 	-webkit-overflow-scrolling: touch;
@@ -97,6 +96,7 @@
 }
 
 #fancybox-img {
+	position: absolute;
 	padding: 0;
 	margin: 0;
 	line-height: 0;
@@ -112,48 +112,57 @@
 /* buttons */
 .fancy-ico {
 	position: absolute;
-	width: 20px;
-	height: 20px;
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+}
+.fancy-ico span {
+	display: block;
+	position: relative;
+	left: 12px;
+	top: 12px;
+	width: 24px;
+	height: 24px;
 	border-radius: 50%;
 	background: #000;
 	border: 2px solid white;
 	box-shadow: 0 0 4px #000;
 	transition: transform .25s ease-in-out;
 }
-#fancybox-close:hover, #fancybox-next:hover, .rtl #fancybox-prev:hover {
-  transform: rotate(360deg);
+#fancybox-close:hover span, #fancybox-next:hover span, .rtl #fancybox-prev:hover span {
+	transform: rotate(360deg);
 }
-#fancybox-prev:hover, .rtl #fancybox-next:hover {
-  transform: rotate(-360deg);
+#fancybox-prev:hover span, .rtl #fancybox-next:hover span {
+	transform: rotate(-360deg);
 }
 /* close button */
 #fancybox-close {
-	top: -12px;
-	right: -12px;
+	top: -24px;
+	right: -24px;
 	cursor: pointer;
 	z-index: 111105;
 	display: none;
 }
-#fancybox-close::after, #fancybox-close::before {
-    position: absolute;
+#fancybox-close span::after, #fancybox-close span::before {
+	content: '';
+	position: absolute;
 	top: 9px;
-    left: 4px;
-    content: '';
-    width: 12px;
-    height: 2px;
-    background-color: #fff;
+	left: 4px;
+	width: 12px;
+	height: 2px;
+	background-color: #fff;
 }
-#fancybox-close::before {
-  transform: rotate(45deg);
+#fancybox-close span::before {
+	transform: rotate(45deg);
 }
-#fancybox-close::after {
-  transform: rotate(-45deg);
+#fancybox-close span::after {
+	transform: rotate(-45deg);
 }
 
 /* navigation elements */
 #fancybox-prev, #fancybox-next {
 	top: 50%;
-	margin-top: -10px;
+	margin-top: -24px;
 	cursor: pointer;
 	z-index: 111102;
 	display: none;
@@ -162,28 +171,28 @@
 #fancybox-next,
 .rtl #fancybox-prev {
 	left: auto;
-	right: -12px;
+	right: -24px;
 }
 
 #fancybox-prev,
 .rtl #fancybox-next {
-	left: -12px;
+	left: -24px;
 	right: auto;
 }
-#fancybox-prev::after, #fancybox-next::after {
+#fancybox-prev span::after, #fancybox-next span::after {
 	content: '';
 	position: absolute;
 	top: 6px;
-	width: 6px;
-	height: 6px;
+	width: 8px;
+	height: 8px;
 	border-top: 2px solid #fff;
 	border-right: 2px solid #fff;
 }
-#fancybox-prev::after, .rtl #fancybox-next::after {
+#fancybox-prev span::after, .rtl #fancybox-next span::after {
 	transform: rotate(-135deg);
 	left: 7px;
 }
-#fancybox-next::after, .rtl #fancybox-prev::after {
+#fancybox-next span::after, .rtl #fancybox-prev span::after {
 	transform: rotate(45deg);
 	left: initial;
 	right: 7px;
@@ -191,12 +200,12 @@
 
 /* title elements */
 
-#fancybox-title {
+#fancybox-title-wrap {
 	z-index: 111104;
 }
 
 .fancybox-title-inside {
-	padding-bottom: 10px;
+	padding-top: 10px;
 	text-align: center;
 	color: #333;
 	background-color: #fff;
@@ -211,6 +220,7 @@
 
 .fancybox-title-over {
 	position: absolute;
+	width: 100%;
 	bottom: 0;
 	left: 0;
 	color: #fff;
@@ -221,7 +231,7 @@
 	text-align:right
 }
 
-#fancybox-title-over {
+.fancybox-title-over #fancybox-title {
 	padding: 10px;
 	background: rgba(0,0,0,.64);
 	display: block;
@@ -231,10 +241,10 @@
 	text-align: center;
 }
 
-#fancybox-title-float {
+.fancybox-title-float #fancybox-title {
 	display: table;
 	margin: -12px auto;
-	height: 20px;
+	height: 24px;
 	padding: 0 15px;
 	line-height: 20px;
 	font-size: 16px;
@@ -257,80 +267,80 @@
 	margin-top: -20px;
 	margin-left: -20px;
 	background-color: rgba(0,0,0,.9);
-  border-radius: 5px;
+	border-radius: 5px;
 	cursor: pointer;
 	overflow: hidden;
 	z-index: 111104;
 	display: none;
 }
 #fancybox-loading div {
-  transform-origin: 20px 20px;
-  animation: fancybox-loading 1.2s linear infinite;
+	transform-origin: 20px 20px;
+	animation: fancybox-loading 1.2s linear infinite;
 }
 #fancybox-loading div::after {
-  content: '';
-  display: block;
-  position: absolute;
+	content: '';
+	display: block;
+	position: absolute;
 	top: 7px;
-  left: 19px;
-  width: 2px;
-  height: 7px;
-  border-radius: 20%;
-  background: #fff;
+	left: 19px;
+	width: 2px;
+	height: 7px;
+	border-radius: 20%;
+	background: #fff;
 }
 #fancybox-loading div:nth-child(1) {
-  transform: rotate(0deg);
-  animation-delay: -1.1s;
+	transform: rotate(0deg);
+	animation-delay: -1.1s;
 }
 #fancybox-loading div:nth-child(2) {
-  transform: rotate(30deg);
-  animation-delay: -1s;
+	transform: rotate(30deg);
+	animation-delay: -1s;
 }
 #fancybox-loading div:nth-child(3) {
-  transform: rotate(60deg);
-  animation-delay: -0.9s;
+	transform: rotate(60deg);
+	animation-delay: -0.9s;
 }
 #fancybox-loading div:nth-child(4) {
-  transform: rotate(90deg);
-  animation-delay: -0.8s;
+	transform: rotate(90deg);
+	animation-delay: -0.8s;
 }
 #fancybox-loading div:nth-child(5) {
-  transform: rotate(120deg);
-  animation-delay: -0.7s;
+	transform: rotate(120deg);
+	animation-delay: -0.7s;
 }
 #fancybox-loading div:nth-child(6) {
-  transform: rotate(150deg);
-  animation-delay: -0.6s;
+	transform: rotate(150deg);
+	animation-delay: -0.6s;
 }
 #fancybox-loading div:nth-child(7) {
-  transform: rotate(180deg);
-  animation-delay: -0.5s;
+	transform: rotate(180deg);
+	animation-delay: -0.5s;
 }
 #fancybox-loading div:nth-child(8) {
-  transform: rotate(210deg);
-  animation-delay: -0.4s;
+	transform: rotate(210deg);
+	animation-delay: -0.4s;
 }
 #fancybox-loading div:nth-child(9) {
-  transform: rotate(240deg);
-  animation-delay: -0.3s;
+	transform: rotate(240deg);
+	animation-delay: -0.3s;
 }
 #fancybox-loading div:nth-child(10) {
-  transform: rotate(270deg);
-  animation-delay: -0.2s;
+	transform: rotate(270deg);
+	animation-delay: -0.2s;
 }
 #fancybox-loading div:nth-child(11) {
-  transform: rotate(300deg);
-  animation-delay: -0.1s;
+	transform: rotate(300deg);
+	animation-delay: -0.1s;
 }
 #fancybox-loading div:nth-child(12) {
-  transform: rotate(330deg);
-  animation-delay: 0s;
+	transform: rotate(330deg);
+	animation-delay: 0s;
 }
 @keyframes fancybox-loading {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
 }
