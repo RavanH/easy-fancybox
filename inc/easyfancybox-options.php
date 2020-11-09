@@ -261,8 +261,8 @@ $efb_options = array(
 						'max' => '80',
 						'sanitize_callback' => 'intval',
 						'class' => 'small-text',
-						'default' => '20',
-						'description' => '<em>' . __('Default:','easy-fancybox')  . ' 20</em><br />'
+						'default' => '40',
+						'description' => '<em>' . __('Default:','easy-fancybox')  . ' 40</em><br />'
 					),
 
 					'p2' => array(
