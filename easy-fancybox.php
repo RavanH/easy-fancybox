@@ -38,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  **************/
 
 define( 'EASY_FANCYBOX_VERSION', '1.9-alpha-93' );
-define( 'FANCYBOX_VERSION', '1.4.1' );
+define( 'FANCYBOX_VERSION', '1.5' );
 define( 'MOUSEWHEEL_VERSION', '3.1.13' );
 define( 'EASING_VERSION', '1.4.1' );
 define( 'METADATA_VERSION', '2.22.1' );

@@ -1046,7 +1046,7 @@
 					if (titleStr && titleStr.length) {
 						title.show();
 					}
-					restore.forEach( el => el.show() );
+					restore.forEach( function(el){ el.show(); } );
 					busy = false;
 				}
 			});
