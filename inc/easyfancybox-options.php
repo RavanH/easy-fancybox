@@ -159,7 +159,6 @@ $efb_options = array(
 						'label_for' => 'fancybox_backgroundColor',
 						'input' => 'text',
 						'sanitize_callback' => 'colorval',
-						'status' => 'disabled',
 						'class' => 'small-text',
 						'default' => '',
 						'description' => ''
@@ -171,10 +170,9 @@ $efb_options = array(
 						'label_for' => 'fancybox_textColor',
 						'input' => 'text',
 						'sanitize_callback' => 'colorval',
-						'status' => 'disabled',
 						'class' => 'small-text',
 						'default' => '',
-						'description' => '<em><a href="'.$efb_url.'">' . __('Make available &raquo;','easy-fancybox') . '</a></em><br />'
+						'description' => __('Enter an HTML color value.','easy-fancybox') . ' <em>' . __('Default:','easy-fancybox')  . ' #fff x inherit</em><br />'
 					),
 					'titleColor' => array(
 						'id' => 'fancybox_titleColor',
@@ -208,10 +206,9 @@ $efb_options = array(
 						'min' => '0',
 						'max' => '99',
 						'sanitize_callback' => 'intval',
-						'status' => 'disabled',
 						'class' => 'small-text',
 						'default' => '',
-						'description' => '<em><a href="'.$efb_url.'">' . __('Make available &raquo;','easy-fancybox') . '</a></em><br />'
+						'description' => __('Set a border radius to create rounded corners. Higher is rounder.','easy-fancybox') . '<br />'
 					),
 
 					'p11' => array(
