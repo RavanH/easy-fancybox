@@ -7,7 +7,7 @@ Text Domain: easy-fancybox
 Domain Path: languages
 Version: 1.9-alpha-94
 Author: RavanH
-Author URI: http://status301.net/
+Author URI: https://status301.net/
 */
 
 /*  Copyright 2020  RavanH  (email : ravanhagen@gmail.com)
@@ -37,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * CONSTANTS
  **************/
 
-define( 'EASY_FANCYBOX_VERSION', '1.9-alpha-93' );
+define( 'EASY_FANCYBOX_VERSION', '1.9-alpha-94' );
 define( 'FANCYBOX_VERSION', '1.5' );
 define( 'MOUSEWHEEL_VERSION', '3.1.13' );
 define( 'EASING_VERSION', '1.4.1' );
