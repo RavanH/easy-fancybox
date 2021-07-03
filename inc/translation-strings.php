@@ -75,4 +75,4 @@ __('To use the Easy Fancybox Pro advanced options, please activate %s.', 'easy-f
 
 __( 'Notice: The current Easy FancyBox plugin version is not fully compatible with your version of the Pro extension. Some advanced options may not be functional.', 'easy-fancybox' );
 /* Translators: %s is replaced by a version number */
-__( 'Please upgrade %s to verion %s or later.', 'easy-fancybox' );
+__( 'Please upgrade %s to version %s or later.', 'easy-fancybox' );
