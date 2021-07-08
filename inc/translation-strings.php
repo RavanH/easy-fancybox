@@ -71,7 +71,7 @@ __('(12 seconds)','easy-fancybox');
 
 /* Translators: %s is replaced by Easy FancyBox plugin title plus installation link */
 __('To use the Easy Fancybox Pro advanced options, please install %s.','easy-fancybox');
-__('Or disable the Easy Fancybox Pro plugin.','easy-fancybox');
+__('To use the Easy Fancybox Pro advanced options, please activate %s.', 'easy-fancybox');
 
 __( 'Notice: The current Easy FancyBox plugin version is not fully compatible with your version of the Pro extension. Some advanced options may not be functional.', 'easy-fancybox' );
 /* Translators: %s is replaced by a version number */

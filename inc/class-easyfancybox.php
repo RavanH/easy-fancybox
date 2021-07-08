@@ -318,6 +318,10 @@ var easy_fancybox_auto=function(){setTimeout(function(){jQuery(\'a[class*="'.$tr
 		if ( !self::$add_scripts )
 			return;
 
+		global $post;
+		if ( !is_a( $post, 'WP_Post' ) || strpos( $post->post_content, 'class="fancybox"' ) === false )
+		    return;
+
 		global $wp_styles;
 		$min = ( defined('WP_DEBUG') && WP_DEBUG ) ? '' : '.min';
 
